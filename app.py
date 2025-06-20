@@ -3,26 +3,39 @@ import pandas as pd
 import joblib
 import os
 import zipfile
+import io
+import requests
 from sklearn.preprocessing import LabelEncoder
-from sklearn.ensemble import RandomForestClassifier
 
-# === UNZIP MODEL JIKA BELUM ADA ===
-import requests, zipfile, io, os
+# === KONFIGURASI ===
+FILE_ID = '1AbCdEfGhIjKlMnOpQrS'  # Ganti dengan ID file Google Drive rf2.zip kamu
+ZIP_FILE = 'rf2.zip'
+ZIP_URL = f'https://drive.google.com/uc?export=download&id={FILE_ID}'
 
-# Hanya jalankan jika belum diekstrak
+# === DOWNLOAD ZIP JIKA BELUM ADA ===
 if not os.path.exists('rf2.pkl'):
-    FILE_ID = '1mxm8VF5n6VIPFcug_55lMWyjoWnSUm3t'  # ← ganti dengan ID file zip kamu
-    download_url = f'https://drive.google.com/uc?export=download&id={FILE_ID}'
-    
-    # Unduh dan ekstrak ZIP langsung dari Google Drive
-    response = requests.get(download_url)
-    with zipfile.ZipFile(io.BytesIO(response.content)) as zip_ref:
-        zip_ref.extractall()
+    st.info("📥 Mengunduh model dari Google Drive...")
+    try:
+        response = requests.get(ZIP_URL)
+        content_type = response.headers.get('Content-Type', '')
+        if 'zip' not in content_type and not response.content.startswith(b'PK'):
+            st.error("❌ Respons dari Google Drive bukan file ZIP. Periksa apakah file kamu sudah di-share secara publik.")
+            st.stop()
+        with zipfile.ZipFile(io.BytesIO(response.content)) as zip_ref:
+            zip_ref.extractall()
+        st.success("✅ Model berhasil diunduh dan diekstrak.")
+    except Exception as e:
+        st.error(f"❌ Gagal mengunduh atau mengekstrak model: {e}")
+        st.stop()
 
 # === LOAD MODEL DAN ENCODER ===
-model = joblib.load('rf2.pkl')
-le_diag_proc = joblib.load('le_diag_proc.pkl')  # LabelEncoder fitur
-le_inacbg = joblib.load('le_inacbg.pkl')        # LabelEncoder target
+try:
+    rf_model = joblib.load('rf2.pkl')
+    le_diag_proc = joblib.load('le_diag_proc.pkl')
+    le_inacbg = joblib.load('le_inacbg.pkl')
+except Exception as e:
+    st.error(f"Gagal memuat model atau encoder: {e}")
+    st.stop()
 
 # === UI ===
 st.title("📋 Prediksi INACBG dari Diagnosa dan Prosedur")
