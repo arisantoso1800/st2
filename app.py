@@ -5,6 +5,13 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
 import joblib  # untuk load model
+import zipfile
+import os
+
+# Unzip rf2.zip jika file .pkl belum diekstrak
+if not os.path.exists('data_eklaim_2022_2024.pkl'):
+    with zipfile.ZipFile('data_eklaim_2022_2024.zip', 'r') as zip_ref:
+        zip_ref.extractall()
 
 df0 = pd.read_pickle('data_eklaim_2022_2024.pkl')
 df0 = df0[['DIAGLIST','PROCLIST','INACBG','TARIF_INACBG','DESKRIPSI_INACBG']]
