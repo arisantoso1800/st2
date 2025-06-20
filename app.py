@@ -8,7 +8,7 @@ import requests
 from sklearn.preprocessing import LabelEncoder
 
 # === KONFIGURASI ===
-FILE_ID = '1AbCdEfGhIjKlMnOpQrS'  # Ganti dengan ID file Google Drive rf2.zip kamu
+FILE_ID = '1mxm8VF5n6VIPFcug_55lMWyjoWnSUm3t'  # Ganti dengan ID file Google Drive rf2.zip kamu
 ZIP_FILE = 'rf2.zip'
 ZIP_URL = f'https://drive.google.com/uc?export=download&id={FILE_ID}'
 
