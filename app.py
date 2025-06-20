@@ -7,8 +7,16 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestClassifier
 
 # === UNZIP MODEL JIKA BELUM ADA ===
+import requests, zipfile, io, os
+
+# Hanya jalankan jika belum diekstrak
 if not os.path.exists('rf2.pkl'):
-    with zipfile.ZipFile('rf2.zip', 'r') as zip_ref:
+    FILE_ID = '1mxm8VF5n6VIPFcug_55lMWyjoWnSUm3t'  # ← ganti dengan ID file zip kamu
+    download_url = f'https://drive.google.com/uc?export=download&id={FILE_ID}'
+    
+    # Unduh dan ekstrak ZIP langsung dari Google Drive
+    response = requests.get(download_url)
+    with zipfile.ZipFile(io.BytesIO(response.content)) as zip_ref:
         zip_ref.extractall()
 
 # === LOAD MODEL DAN ENCODER ===
