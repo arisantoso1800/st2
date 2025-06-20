@@ -1,14 +1,20 @@
 import streamlit as st
 import zipfile
 import os
+import joblib
+from sklearn.preprocessing import LabelEncoder
 
 # Unzip rf2.zip jika file .pkl belum diekstrak
 if not os.path.exists('rf2.pkl'):
     with zipfile.ZipFile('rf2.zip', 'r') as zip_ref:
         zip_ref.extractall()
 
-import joblib
+
 rf_full = joblib.load('rf2.pkl')
+
+# Encode fitur gabungan dan target
+le_diag_proc = LabelEncoder()
+le_inacbg = LabelEncoder()  # Sudah ada, tapi kita gunakan ulang
 
 st.title("Prediksi Kode INACBG")
 
